@@ -2,11 +2,13 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DepartmentController;
+use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\PositionController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('auth')->group(function () {
     Route::post('/login', [AuthController::class, 'login']);
+    Route::post('/login-with-code', [AuthController::class, 'loginWithEmployeeCode']);
 });
 
 Route::middleware('auth:api')->group(function () {
@@ -23,4 +25,5 @@ Route::middleware(['auth:api', 'role:admin'])->prefix('admin')->group(function (
 
     Route::apiResource('departments', DepartmentController::class);
     Route::apiResource('positions', PositionController::class);
+    Route::apiResource('employees', EmployeeController::class);
 });

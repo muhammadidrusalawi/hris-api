@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Helpers\ResponseHelper;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Http\Resources\UserResource;
+use App\Models\Employee;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -24,6 +25,29 @@ class AuthController extends Controller
 
         return ResponseHelper::success('Login successful', [
             'user' => new UserResource($user),
+            'token' => $token,
+        ]);
+    }
+
+    public function loginWithEmployeeCode(Request $request)
+    {
+        if (!$request->employee_code) {
+            return ResponseHelper::apiError('employee_code is required', null, 422);
+        }
+
+        $employee = Employee::with('user')
+            ->where('employee_code', $request->employee_code)
+            ->first();
+
+        if (!$employee || !$employee->user) {
+            return ResponseHelper::apiError('Employee account not found', null, 401);
+        }
+
+        $token = JWTAuth::fromUser($employee->user);
+
+        return ResponseHelper::success('Employee login successful', [
+            'employee_code' => $employee->employee_code,
+            'user' => new UserResource($employee->user),
             'token' => $token,
         ]);
     }
