@@ -26,6 +26,7 @@ class CreateDepartmentRequest extends FormRequest
     {
         return [
             'name' => 'required|string|max:255|unique:departments',
+            'manager_id' => 'nullable|exists:users,id',
         ];
     }
 
@@ -36,6 +37,8 @@ class CreateDepartmentRequest extends FormRequest
             'name.string'   => 'Department name must be a text.',
             'name.max'      => 'Department name maximum 255 characters.',
             'name.unique'   => 'Department name already exists.',
+
+            'manager_id.exists' => 'Selected manager is invalid.',
         ];
     }
 

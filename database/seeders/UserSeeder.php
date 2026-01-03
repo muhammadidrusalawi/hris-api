@@ -18,24 +18,8 @@ class UserSeeder extends Seeder
         User::create([
             'id' => Str::uuid(),
             'name' => 'Admin HRIS',
-            'email' => 'admin@gmail.com',
+            'email' => 'admin@company.local',
             'role' => 'admin',
-            'password' => Hash::make('12345678'),
-        ]);
-
-        User::create([
-            'id' => Str::uuid(),
-            'name' => 'Muhammad Iqbal',
-            'email' => 'muhammad.iqbal@gmail.com',
-            'role' => 'employee',
-            'password' => Hash::make('12345678'),
-        ]);
-
-        User::create([
-            'id' => Str::uuid(),
-            'name' => 'Muhammad Idrus',
-            'email' => 'muhammad.idrus@gmail.com',
-            'role' => 'employee',
             'password' => Hash::make('12345678'),
         ]);
     }

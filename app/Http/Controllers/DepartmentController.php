@@ -16,7 +16,7 @@ class DepartmentController extends Controller
      */
     public function index()
     {
-        $data = Department::all();
+        $data = Department::with('manager')->withCount('employees')->get();
 
         if ($data->isEmpty()) {
             return ResponseHelper::success('There is no department data. Please add department.',);
@@ -42,6 +42,8 @@ class DepartmentController extends Controller
      */
     public function show(Department $department)
     {
+        $department->load(['manager', 'employees'])->loadCount('employees');
+
         return ResponseHelper::success('Department detail retrieved successfully', new DepartmentResource($department));
     }
 
