@@ -29,3 +29,7 @@ Route::middleware(['auth:api', 'role:admin'])->prefix('admin')->group(function (
     Route::apiResource('positions', PositionController::class);
     Route::apiResource('employees', EmployeeController::class);
 });
+
+Route::middleware(['auth:api', 'role:employee'])->prefix('employee')->group(function () {
+    Route::get('/my', [EmployeeController::class, 'getByOwner']);
+});

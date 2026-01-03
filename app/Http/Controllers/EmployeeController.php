@@ -26,6 +26,22 @@ class EmployeeController extends Controller
         return ResponseHelper::success('Employee data has been successfully retrieved', EmployeeResource::collection($data));
     }
 
+    public function getByOwner(Request $request)
+    {
+        $userId = auth()->id();
+
+        $employees = Employee::with(['department', 'position', 'user'])
+            ->where('user_id', $userId)
+            ->orderBy('employee_code')
+            ->get();
+
+        if ($employees->isEmpty()) {
+            return ResponseHelper::success('You have no employee data yet.');
+        }
+
+        return ResponseHelper::success('Your employee data has been successfully retrieved', EmployeeResource::collection($employees));
+    }
+
     /**
      * Store a newly created resource in storage.
      */
