@@ -23,7 +23,7 @@ class EmployeeController extends Controller
             return ResponseHelper::success('There is no employee data. Please add employee.',);
         }
 
-        return ResponseHelper::success('Department data has been successfully retrieved', EmployeeResource::collection($data));
+        return ResponseHelper::success('Employee data has been successfully retrieved', EmployeeResource::collection($data));
     }
 
     /**
