@@ -4,6 +4,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\PositionController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('auth')->group(function () {
@@ -25,6 +26,7 @@ Route::middleware(['auth:api', 'role:admin'])->prefix('admin')->group(function (
         ]);
     });
 
+    Route::get('/users/manager', [Usercontroller::class, 'getAllManager']);
     Route::apiResource('departments', DepartmentController::class);
     Route::apiResource('positions', PositionController::class);
     Route::apiResource('employees', EmployeeController::class);
