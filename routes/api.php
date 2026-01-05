@@ -5,6 +5,8 @@ use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\PositionController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\UserController;
+
 
 Route::prefix('auth')->group(function () {
     Route::post('/login', [AuthController::class, 'login']);
@@ -32,4 +34,7 @@ Route::middleware(['auth:api', 'role:admin'])->prefix('admin')->group(function (
 
 Route::middleware(['auth:api', 'role:employee'])->prefix('employee')->group(function () {
     Route::get('/my', [EmployeeController::class, 'getByOwner']);
+});
+Route::middleware(['auth:api', 'role:admin,hr'])->group(function () {
+    Route::get('/users/managers', [UserController::class, 'getManagers']);
 });
