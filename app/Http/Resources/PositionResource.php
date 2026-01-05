@@ -17,6 +17,7 @@ class PositionResource extends JsonResource
         return [
             'id'    => $this->id,
             'name'  => $this->name,
+            'employee_count' => $this->whenCounted('employees'),
         ];
     }
 }

@@ -16,7 +16,7 @@ class PositionController extends Controller
      */
     public function index()
     {
-        $data = Position::all();
+        $data = Position::withCount('employees')->get();
 
         if ($data->isEmpty()) {
             return ResponseHelper::success('There is no position data. Please add position.',);
