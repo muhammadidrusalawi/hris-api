@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignUuid('user_id')->nullable()->constrained()->nullOnDelete();
             $table->string('employee_code')->unique();
             $table->string('name');
-            $table->foreignId('department_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('department_id')->nullable()->constrained()->nullOnDelete();
             $table->foreignId('position_id')->nullable()->constrained()->nullOnDelete();
             $table->date('join_date');
             $table->enum('status', ['active', 'probation', 'resigned', 'intern', 'contract'])->default('active');
