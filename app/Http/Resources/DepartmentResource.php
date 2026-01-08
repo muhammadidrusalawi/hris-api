@@ -31,6 +31,8 @@ class DepartmentResource extends JsonResource
                     'position' => [
                         'name' => $employee->position->name,
                     ],
+                    'status' => $employee->status,
+                    'join_date' => $employee->join_date,
                 ]);
             }),
         ];
