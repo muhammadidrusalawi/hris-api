@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Helpers\ResponseHelper;
 use App\Http\Requests\Employee\CreateEmployeeRequest;
+use App\Http\Requests\Employee\UpdateEmployeeRequest;
 use App\Http\Resources\EmployeeResource;
 use App\Models\Employee;
 use Illuminate\Http\Request;
@@ -51,8 +52,7 @@ class EmployeeController extends Controller
 
         $employee->load(['department', 'position', 'user']);
 
-        return ResponseHelper::success('New employee has been successfully added', new EmployeeResource($employee)
-        );
+        return ResponseHelper::success('New employee has been successfully added', new EmployeeResource($employee));
     }
 
     /**
@@ -60,23 +60,21 @@ class EmployeeController extends Controller
      */
     public function show(Employee $employee)
     {
-        //
-    }
+        $employee->load(['department', 'position', 'user']);
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Employee $employee)
-    {
-        //
+        return ResponseHelper::success('Employee detail retrieved successfully', new EmployeeResource($employee));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Employee $employee)
+    public function update(UpdateEmployeeRequest $request, Employee $employee)
     {
-        //
+        $data = $request->validated();
+
+        $employee->update($data);
+
+        return ResponseHelper::success('Employee has been successfully updated', new EmployeeResource($employee));
     }
 
     /**
@@ -84,6 +82,12 @@ class EmployeeController extends Controller
      */
     public function destroy(Employee $employee)
     {
-        //
+        if ($employee->user) {
+            $employee->user->delete();
+        }
+
+        $employee->delete();
+
+        return ResponseHelper::success('Employee has been successfully deleted');
     }
 }
