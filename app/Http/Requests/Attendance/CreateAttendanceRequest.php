@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Http\Requests\Auth;
+namespace App\Http\Requests\Attendance;
 
-use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Contracts\Validation\Validator;
-use Illuminate\Http\Exceptions\HttpResponseException;
 use App\Helpers\ResponseHelper;
+use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Http\Exceptions\HttpResponseException;
 
-class UpdateProfileRequest extends FormRequest
+class CreateAttendanceRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,20 +25,20 @@ class UpdateProfileRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['sometimes', 'string', 'max:255'],
-            'password' => ['sometimes', 'nullable', 'string', 'min:8', 'confirmed'],
+            'date' => ['required', 'date'],
+            'clock_in' => ['required', 'date_format:H:i:s'],
+            'clock_out' => ['nullable', 'date_format:H:i:s'],
         ];
     }
 
     public function messages(): array
     {
         return [
-            'name.string' => 'Name must be a text.',
-            'name.max' => 'Name must be less than 255 characters.',
-
-            'password.string' => 'Password must be a text.',
-            'password.min' => 'Password must be at least 8 characters.',
-            'password.confirmed' => 'Password confirmation does not match.',
+            'date.required' => 'Date is required.',
+            'date.date' => 'Date format is invalid.',
+            'clock_in.required' => 'Clock in time is required.',
+            'clock_in.date_format' => 'Clock in format must be HH:MM:SS.',
+            'clock_out.date_format' => 'Clock out format must be HH:MM:SS.',
         ];
     }
 

@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
@@ -53,31 +54,62 @@ class Employee extends Model
         });
 
         static::created(function ($employee) {
-            if ($employee->user_id !== null) return;
+            if ($employee->user_id === null) {
+                $email = self::generateEmployeeEmail($employee);
 
-            $email = self::generateEmployeeEmail($employee);
+                $user = User::firstOrCreate(
+                    ['email' => $email],
+                    [
+                        'name' => $employee->name,
+                        'password' => Hash::make(Str::random(12)),
+                        'role' => 'employee',
+                    ]
+                );
 
-            $user = User::firstOrCreate(
-                ['email' => $email],
+                if ($employee->user_id !== $user->id) {
+                    $employee->update([
+                        'user_id' => $user->id,
+                    ]);
+                }
+            }
+
+            LeaveBalance::firstOrCreate(
                 [
-                    'name' => $employee->name,
-                    'password' => Hash::make(Str::random(12)),
-                    'role' => 'employee',
+                    'employee_id' => $employee->id,
+                    'year' => now()->year,
+                ],
+                [
+                    'total_quota' => 12,
+                    'used_quota' => 0,
+                    'remaining_quota' => 12,
                 ]
             );
-
-            if ($employee->user_id !== $user->id) {
-                $employee->update([
-                    'user_id' => $user->id,
-                ]);
-            }
         });
+//        static::created(function ($employee) {
+//            if ($employee->user_id !== null) return;
+//
+//            $email = self::generateEmployeeEmail($employee);
+//
+//            $user = User::firstOrCreate(
+//                ['email' => $email],
+//                [
+//                    'name' => $employee->name,
+//                    'password' => Hash::make(Str::random(12)),
+//                    'role' => 'employee',
+//                ]
+//            );
+//
+//            if ($employee->user_id !== $user->id) {
+//                $employee->update([
+//                    'user_id' => $user->id,
+//                ]);
+//            }
+//        });
 
     }
 
     private static function generateEmployeeEmail($employee): string
     {
-        // default dummy email (HRIS standard)
         return strtolower($employee->employee_code) . '@company.local';
     }
 
@@ -94,5 +126,20 @@ class Employee extends Model
     public function position(): BelongsTo
     {
         return $this->belongsTo(Position::class);
+    }
+
+    public function attendances(): HasMany
+    {
+        return $this->hasMany(Attendance::class);
+    }
+
+    public function leaveBalances(): HasMany
+    {
+        return $this->hasMany(LeaveBalance::class);
+    }
+
+    public function leaves(): HasMany
+    {
+        return $this->hasMany(Leave::class);
     }
 }

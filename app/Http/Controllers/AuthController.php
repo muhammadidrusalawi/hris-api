@@ -69,7 +69,7 @@ class AuthController extends Controller
 
         $data = $request->validated();
 
-        if (isset($data['password'])) {
+        if ($request->filled('password')) {
             $data['password'] = Hash::make($data['password']);
         } else {
             unset($data['password']);
@@ -77,8 +77,27 @@ class AuthController extends Controller
 
         $user->update($data);
 
-        return ResponseHelper::success('User profile updated', new UserResource($user));
+        return ResponseHelper::success(
+            'User profile updated',
+            new UserResource($user)
+        );
     }
+//    public function updateProfile(UpdateProfileRequest $request)
+//    {
+//        $user = JWTAuth::parseToken()->authenticate();
+//
+//        $data = $request->validated();
+//
+//        if (isset($data['password'])) {
+//            $data['password'] = Hash::make($data['password']);
+//        } else {
+//            unset($data['password']);
+//        }
+//
+//        $user->update($data);
+//
+//        return ResponseHelper::success('User profile updated', new UserResource($user));
+//    }
 
     public function logout()
     {

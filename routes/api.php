@@ -1,8 +1,11 @@
 <?php
 
+use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\EmployeeController;
+use App\Http\Controllers\LeaveBalanceController;
+use App\Http\Controllers\LeaveController;
 use App\Http\Controllers\PositionController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
@@ -30,8 +33,18 @@ Route::middleware(['auth:api', 'role:admin'])->prefix('admin')->group(function (
     Route::apiResource('departments', DepartmentController::class);
     Route::apiResource('positions', PositionController::class);
     Route::apiResource('employees', EmployeeController::class);
+    Route::apiResource('attendances', AttendanceController::class);
+    Route::apiResource('leave-balances', LeaveBalanceController::class);
+    Route::get('/leave-balances/{employee}', [LeaveBalanceController::class, 'show']);
+    Route::post('/leaves/approve/{leave}', [LeaveController::class, 'approve']);
 });
 
 Route::middleware(['auth:api', 'role:employee'])->prefix('employee')->group(function () {
     Route::get('/my', [EmployeeController::class, 'getByOwner']);
+    Route::get('/attendances', [AttendanceController::class, 'getAttendanceFromEmployee']);
+    Route::post('/attendances', [AttendanceController::class, 'storeAttendanceFromEmployee']);
+    Route::put('/attendances/{attendance}', [AttendanceController::class, 'updateFromEmployee']);
+    Route::get('/leave-balances', [LeaveBalanceController::class, 'myLeaveBalance']);
+    Route::post('/leaves', [LeaveController::class, 'store']);
+    Route::get('/leaves', [LeaveController::class, 'index']);
 });

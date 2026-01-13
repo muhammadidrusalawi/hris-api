@@ -1,13 +1,14 @@
 <?php
 
-namespace App\Http\Requests\Auth;
+namespace App\Http\Requests\Leave;
 
-use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Contracts\Validation\Validator;
-use Illuminate\Http\Exceptions\HttpResponseException;
 use App\Helpers\ResponseHelper;
+use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Http\Exceptions\HttpResponseException;
+use Illuminate\Validation\Rule;
 
-class UpdateProfileRequest extends FormRequest
+class CreateLeaveRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,20 +26,19 @@ class UpdateProfileRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['sometimes', 'string', 'max:255'],
-            'password' => ['sometimes', 'nullable', 'string', 'min:8', 'confirmed'],
+            'type' => ['required', Rule::in(['annual', 'sick', 'unpaid', 'other'])],
+            'start_date' => ['required', 'date', 'after_or_equal:today'],
+            'end_date' => ['required', 'date', 'after_or_equal:start_date'],
+            'reason' => ['nullable', 'string'],
         ];
     }
 
     public function messages(): array
     {
         return [
-            'name.string' => 'Name must be a text.',
-            'name.max' => 'Name must be less than 255 characters.',
-
-            'password.string' => 'Password must be a text.',
-            'password.min' => 'Password must be at least 8 characters.',
-            'password.confirmed' => 'Password confirmation does not match.',
+            'type.in' => 'Invalid leave type selected',
+            'start_date.after_or_equal' => 'Start date cannot be in the past',
+            'end_date.after_or_equal' => 'End date must be after or equal to start date',
         ];
     }
 
